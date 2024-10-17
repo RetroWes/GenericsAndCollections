@@ -1,0 +1,61 @@
+import java.util.*;
+
+// Outer class to manage the Knapsack problem operations
+public class KnapsackProblem {
+  private int capacity;
+  private int[] weights;
+  private int[] values;
+  private int itemCount;
+
+  // Constructor to initialize the knapsack problem setup
+  public KnapsackProblem(int capacity, int[] weights, int[] values) {
+    this.capacity = capacity;
+    this.weights = weights;
+    this.values = values;
+    this.itemCount = values.length;
+  }
+
+  // Inner class to encapsulate item properties
+  class Item {
+    int weight, value;
+
+    Item(int weight, int value) {
+      this.weight = weight;
+      this.value = value;
+    }
+  }
+
+  // A method to find the maximum of two integers
+  private static int max(int a, int b) {
+    return (a > b) ? a : b;
+  }
+
+  // Method to solve the knapsack problem using dynamic programming
+  public int solve() {
+    int[][] K = new int[itemCount + 1][capacity + 1];
+
+    for (int i = 0; i <= itemCount; i++) {
+      for (int w = 0; w <= capacity; w++) {
+        if (i == 0 || w == 0)
+          K[i][w] = 0;
+        else if (weights[i - 1] <= w)
+          K[i][w] = max(values[i - 1] + K[i - 1][w - weights[i - 1]], K[i - 1][w]);
+        else
+          K[i][w] = K[i - 1][w];
+      }
+    }
+
+    return K[itemCount][capacity];
+  }
+
+  // Main method to test the knapsack algorithm
+  public static void main(String[] args) {
+    int[] val = { 60, 100, 120, 160, 50, 110, 150, 200 }; // Values
+    int[] wt = { 10, 20, 30, 40, 10, 25, 35, 45 }; // Weights
+    int W = 120; // Maximum weight capacity of the knapsack
+
+    KnapsackProblem knapsack = new KnapsackProblem(W, wt, val);
+    System.out.println("Maximum value that can be put in a knapsack of capacity W = " +
+        W + " is " + knapsack.solve());
+  }
+}
